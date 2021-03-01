@@ -1,4 +1,4 @@
-from os import environ
+from os import environ, getcwd
 import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
 
@@ -35,3 +35,5 @@ class S3client:
             raise SystemError
 
         return response
+
+print(getcwd())
