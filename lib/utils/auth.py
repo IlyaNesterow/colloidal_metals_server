@@ -11,9 +11,9 @@ def verify_auth_credentials(data: dict) -> str:
     credentials = fetch_and_validate()
 
     if credentials['password'] != data['password']:
-        raise InvalidPasswordError()
+        raise InvalidPasswordError('Invalid password')
     elif credentials['username'] != data['username']:
-        raise InvalidUsernameError()
+        raise InvalidUsernameError('Invalid username')
     else:
         return create_token({'username': data['username']})
 

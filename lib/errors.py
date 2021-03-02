@@ -9,3 +9,6 @@ class InvalidUsernameError(ValueError):
 
 class InvalidToken(ValueError):
     pass
+
+class MissingCredentialsError(ValueError):
+    pass

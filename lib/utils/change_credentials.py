@@ -1,27 +1,32 @@
-from os import getcwd, path
-
 from lib.utils.credentials import fetch_and_validate
-from lib.errors import InvalidPasswordError
+from lib.errors import InvalidPasswordError, MissingCredentialsError
 from lib.utils.files import JSONfile
 from lib.aws.client import S3client
 
 
-def change_pw(data: dict) -> dict:
+def change_pw(data: dict) -> bool:
     if not data.get('pw') or not data.get('pw_repeat') or not data.get('new_pw'):
-        raise ValueError('One of the passwords is missing')
+        raise MissingCredentialsError('One of the passwords is missing')
 
     credentials = fetch_and_validate()
 
     if credentials['password'] != data['pw'] or credentials['password'] != data['pw_repeat']:
-        raise InvalidPasswordError()
+        raise InvalidPasswordError('Passwords does not match')
+
+    if credentials['password'] == data['new_pw']:
+        return True
 
     file = JSONfile('credentials')
     file.create({
                   'username': credentials['username'],
                   'password': data['new_pw']
                 })
+    
     client = S3client()
-    client.upload_file(JSONfile.name)
+    uploaded = client.upload_file(file.name)
+    file.delete()
 
-#change_pw({'pw': 'password', 'pw_repeat': 'password', 'new_pw': 'password_1'})
-print(getcwd())
+    if uploaded:
+        client.delele_old_objects('credentials.json')
+
+    return uploaded

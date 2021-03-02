@@ -1,4 +1,4 @@
-from os import environ, getcwd
+from os import environ
 import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
 
@@ -11,7 +11,7 @@ class S3client:
     def upload_file(self, file_name: str, object_name: str=None) -> bool:
         if object_name is None:
             object_name = file_name
-
+        
         try:
             with open(file_name, "rb") as f:
                 self.client.upload_fileobj(f, self.bucket, object_name)
@@ -19,13 +19,22 @@ class S3client:
             return False
         return True
 
-    def delete_file(self, object_name: str) -> None:
+    def list_obj_versions(self, obj_name: str) -> list:
         try:
-            self.client.delete_object(Bucket=self.bucket, Key=object_name)
+            versions: dict = self.client.list_object_versions(Bucket=self.bucket)
+            return [v for v in versions.get('Versions') if v.get('Key') == obj_name]
+        except (TypeError, ClientError):
+            return []
+
+    def delete_file(self, object_name: str, version_id: str = None) -> None:
+        try:
+            self.client.delete_object(Bucket=self.bucket, 
+                                      Key=object_name, 
+                                      VersionId=version_id)
         except ClientError:
             raise ValueError('region was not defined')
 
-    def get_presigned_url(self, object_name, expiration=3600) -> str:
+    def get_presigned_url(self, object_name: str, expiration=3600) -> str:
         try:
             response = self.client.generate_presigned_url('get_object',
                                                         Params={'Bucket': self.bucket,
@@ -36,4 +45,9 @@ class S3client:
 
         return response
 
-print(getcwd())
+    def delele_old_objects(self, obj_name: str) -> None:
+        objs = self.list_obj_versions(obj_name)
+        
+        for obj in objs:
+            if obj.get('IsLatest') == False and obj.get('VersionId'):
+                self.delete_file(obj_name, obj['VersionId'])
