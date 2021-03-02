@@ -1,2 +1,1 @@
-import lib.utils.change_credentials
-import lib.aws.client 
+import lib.handlers.images

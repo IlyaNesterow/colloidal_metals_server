@@ -1,6 +1,4 @@
 
-
-
 class InvalidPasswordError(ValueError):
     pass
 
@@ -17,4 +15,7 @@ class AuthError(ValueError):
     pass
 
 class FailedToUploadError(SystemError):
+    pass
+
+class FormatError(ValueError):
     pass

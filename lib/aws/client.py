@@ -26,11 +26,21 @@ class S3client:
         except (TypeError, ClientError):
             return []
 
+    def list_objects(self, marker: str) -> list[dict]:
+        try:
+            stuff: dict = self.client.list_objects(Bucket=self.bucket, Marker=marker)
+            contents = stuff.get('Contents')
+            return contents
+        except (ClientError, Exception):
+            return []
+
     def delete_file(self, object_name: str, version_id: str = None) -> None:
         try:
-            self.client.delete_object(Bucket=self.bucket, 
-                                      Key=object_name, 
-                                      VersionId=version_id)
+            kwargs = {'Bucket': self.bucket, 'Key': object_name}
+            if version_id: 
+                kwargs['VersionId'] = version_id
+
+            self.client.delete_object(**kwargs)
         except ClientError:
             raise ValueError('region was not defined')
 
