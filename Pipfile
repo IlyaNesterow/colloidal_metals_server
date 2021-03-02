@@ -7,6 +7,7 @@ name = "pypi"
 boto3 = "*"
 flask = "*"
 pyjwt = "*"
+validators = "*"
 
 [dev-packages]
 black = "*"

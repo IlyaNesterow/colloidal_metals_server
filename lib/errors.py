@@ -12,3 +12,9 @@ class InvalidToken(ValueError):
 
 class MissingCredentialsError(ValueError):
     pass
+
+class AuthError(ValueError):
+    pass
+
+class FailedToUploadError(SystemError):
+    pass
