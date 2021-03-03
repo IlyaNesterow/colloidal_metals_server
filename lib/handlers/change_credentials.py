@@ -1,8 +1,8 @@
 from typing import Union
 
 from lib.helpers.upload import upload_json
-from lib.utils.credentials import fetch_and_validate
-from lib.utils.auth_jwt import create_token
+from lib.helpers.credentials import fetch_and_validate
+from lib.helpers.auth_jwt import create_token
 from lib.helpers.validators import validate_content
 from lib.errors import *
 

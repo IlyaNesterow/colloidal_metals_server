@@ -2,6 +2,7 @@ from typing import Union
 from lib.errors import MissingCredentialsError
 from validators import url, between, length
 
+
 def validate_content(pages: dict) -> None:
     if not pages:
         raise MissingCredentialsError('No pages section')

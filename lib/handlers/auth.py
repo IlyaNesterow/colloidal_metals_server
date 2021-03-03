@@ -1,9 +1,12 @@
-from typing import Callable
-from functools import wraps
-from flask import request, jsonify
-from lib.utils.credentials import fetch_and_validate
+from os import environ
+from flask import request
+from jwt import decode
+from jwt.exceptions import DecodeError
+
+from lib.errors import AuthError
+from lib.helpers.credentials import fetch_and_validate
 from lib.errors import InvalidPasswordError, InvalidUsernameError
-from lib.utils.auth_jwt import create_token, decode_token
+from lib.helpers.auth_jwt import create_token
 
 
 def verify_auth_credentials(data: dict) -> str:
@@ -20,14 +23,12 @@ def verify_auth_credentials(data: dict) -> str:
         return create_token({'username': data['username']})
 
 
-def verify_auth(func: Callable) -> None:
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        token = request.cookies.get('auth')
-        auth = decode_token(token)
-        if auth:
-            return func(*args, **kwargs)
-        else: 
-            return jsonify({'error': 'Authentication failed'}), 400
-
-    return wrapper
+def get_username() -> dict:
+    token = request.cookies.get('auth')
+    if not token:
+        raise AuthError('Token not found')
+    try:
+        res = decode(token, environ.get('JWT_SECRET', 'default'), algorithms=['HS256'])
+        return res
+    except DecodeError:
+        raise AuthError('Token forged')
