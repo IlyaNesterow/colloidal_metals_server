@@ -8,9 +8,7 @@ boto3 = "*"
 flask = "*"
 pyjwt = "*"
 validators = "*"
-
-[dev-packages]
-black = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.9"

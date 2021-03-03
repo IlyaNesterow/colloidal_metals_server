@@ -1,0 +1,14 @@
+FROM python:3.9.1
+
+ENV FLASK_APP "lib/app.py"
+ENV FLASK_ENV "development"
+ENV FLASK_DEBUG True
+
+WORKDIR /usr/src/app
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+ADD . .
+RUN cd /lib
+EXPOSE 3000
+CMD ["flask", "run", "--host=0.0.0.0", "--port=3000"]
