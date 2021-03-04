@@ -17,7 +17,7 @@ def change_password():
         changed = change_pw(request.json)
         return jsonify({'changed': changed}), 201
     except (MissingCredentialsError, InvalidPasswordError) as er:
-        return jsonify({'error': er.args[0] or 'Unknown'}), 400     
+        return jsonify({'error': er.args[0] or 'Unknown'}), 400
     except Exception as ex:
         return jsonify({'error': ex.args[0] or 'Server error'}), 500
 
@@ -30,12 +30,13 @@ def change_username():
         username, token = change_uname(request.json)
         resp = make_response(jsonify({'username': username}))
         if token:
-            resp.set_cookie('auth', token, expires=datetime.now() + timedelta(hours=1))
+            resp.set_cookie('auth', token, expires=datetime.now() +
+                            timedelta(hours=1), httponly=True)
         return resp, 201
     except (MissingCredentialsError, InvalidUsernameError) as er:
-        return jsonify({'error': er.args[0] or 'Unknown'}), 400   
+        return jsonify({'error': er.args[0] or 'Unknown'}), 400
     except Exception as ex:
-        return jsonify({'error': ex.args[0] or 'Server error'}), 500 
+        return jsonify({'error': ex.args[0] or 'Server error'}), 500
 
 
 @edit_bp.route('/content', methods=['PUT'])
@@ -46,6 +47,6 @@ def set_new_content():
         succeded = change_content(request.json)
         return jsonify({'success': succeded}), 201
     except (MissingCredentialsError, InvalidUsernameError) as er:
-        return jsonify({'error': er.args[0] or 'Unknown'}), 400 
+        return jsonify({'error': er.args[0] or 'Unknown'}), 400
     except Exception as ex:
-        return jsonify({'error': ex.args[0] or 'Server error'}), 500 
+        return jsonify({'error': ex.args[0] or 'Server error'}), 500

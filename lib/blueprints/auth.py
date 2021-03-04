@@ -16,7 +16,8 @@ def login():
     try:
         token = verify_auth_credentials(request.json)
         resp = make_response(jsonify({'success': True}))
-        resp.set_cookie('auth', token, expires=datetime.now() + timedelta(hours=1))
+        resp.set_cookie('auth', token, expires=datetime.now() +
+                        timedelta(hours=1), httponly=True)
         return resp, 201
     except (InvalidUsernameError, InvalidPasswordError) as er:
         return jsonify({'error': er.args[0] or 'Unknown'}), 400
