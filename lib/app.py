@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, Response
 from dotenv import find_dotenv, load_dotenv
 
 from lib.helpers.error_handlers import *
@@ -10,8 +10,21 @@ app = Flask(__name__)
 
 load_dotenv(find_dotenv())
 
+
+@app.after_request
+def after_request(response: Response) -> Response:
+    header = response.headers
+    header['Access-Control-Allow-Origin'] = '*'
+    header['Access-Control-Allow-Methods'] = '*'
+    header['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    return response
+
+
 def default_route():
     return 'This is a rest-api server'
+
+
+app.config['CORS_HEADERS'] = 'application/json'
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(edit_bp)

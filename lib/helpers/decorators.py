@@ -13,7 +13,7 @@ def verify_auth(func: Callable) -> None:
         auth = decode_token(token)
         if auth:
             return func(*args, **kwargs)
-        else: 
+        else:
             return abort(403, 'Authentication failed')
 
     return wrapper
@@ -25,7 +25,7 @@ def check_for_json(func):
         try:
             if not request.json:
                 return abort(400, 'There is an empty body')
-            else: 
+            else:
                 return func(*args, **kwargs)
         except BadRequest:
             return abort(400, 'The body is not a json')
