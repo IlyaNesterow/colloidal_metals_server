@@ -1,38 +1,25 @@
-from flask import Flask, Response
+from flask import Flask
 from dotenv import find_dotenv, load_dotenv
 
 from lib.helpers.error_handlers import *
 from lib.blueprints.auth import auth_bp
 from lib.blueprints.edit import edit_bp
 from lib.blueprints.images import images_bp
+from lib.blueprints.info import info_bp
+from lib.helpers.other import cors_handling, default_route
 
 app = Flask(__name__)
 
 load_dotenv(find_dotenv())
 
-
-@app.after_request
-def after_request(response: Response) -> Response:
-    response.headers.add(
-        'Access-Control-Allow-Origin',
-        'https://jovial-thompson-aed841.netlify.app')
-    response.headers.add('Access-Control-Allow-Methods',
-                         'PUT, GET, DELETE, OPTIONS')
-    response.headers.add('Access-Control-Allow-Headers',
-                         'content-type, authorization')
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
-    return response
-
-
-def default_route():
-    return 'This is a rest-api server'
-
+app.after_request(cors_handling)
 
 app.config['CORS_HEADERS'] = 'application/json'
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(edit_bp)
 app.register_blueprint(images_bp)
+app.register_blueprint(info_bp)
 
 app.add_url_rule('/', 'index', default_route)
 

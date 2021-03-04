@@ -1,5 +1,4 @@
 from os import environ
-from flask import request
 from jwt import decode
 from jwt.exceptions import DecodeError
 
@@ -7,6 +6,7 @@ from lib.errors import AuthError
 from lib.helpers.credentials import fetch_and_validate
 from lib.errors import InvalidPasswordError, InvalidUsernameError
 from lib.helpers.auth_jwt import create_token
+from lib.helpers.other import get_token
 
 
 def verify_auth_credentials(data: dict) -> str:
@@ -24,11 +24,12 @@ def verify_auth_credentials(data: dict) -> str:
 
 
 def get_username() -> dict:
-    token = request.cookies.get('auth')
+    token = get_token()
     if not token:
         raise AuthError('Token not found')
     try:
-        res = decode(token, environ.get('JWT_SECRET', 'default'), algorithms=['HS256'])
+        res = decode(token, environ.get(
+            'JWT_SECRET', 'default'), algorithms=['HS256'])
         return res
     except DecodeError:
         raise AuthError('Token forged')

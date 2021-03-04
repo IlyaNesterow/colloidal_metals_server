@@ -4,12 +4,16 @@ from flask import request, abort
 from werkzeug.exceptions import BadRequest
 
 from lib.helpers.auth_jwt import decode_token
+from lib.helpers.other import get_token
 
 
-def verify_auth(func: Callable) -> None:
+def verify_auth(func: Callable) -> Callable:
     @wraps(func)
     def wrapper(*args, **kwargs):
-        token = request.cookies.get('auth')
+        token = get_token()
+        if not token:
+            return abort(403, 'Authentication failed')
+
         auth = decode_token(token)
         if auth:
             return func(*args, **kwargs)
@@ -19,7 +23,7 @@ def verify_auth(func: Callable) -> None:
     return wrapper
 
 
-def check_for_json(func):
+def check_for_json(func: Callable) -> Callable:
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:

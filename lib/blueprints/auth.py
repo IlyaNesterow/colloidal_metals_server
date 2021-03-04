@@ -1,5 +1,4 @@
 from flask import *
-from datetime import datetime, timedelta
 
 from lib.handlers.auth import verify_auth_credentials
 from lib.errors import *
@@ -15,9 +14,7 @@ auth_bp = Blueprint('auth_blueprint', __name__)
 def login():
     try:
         token = verify_auth_credentials(request.json)
-        resp = make_response(jsonify({'success': True}))
-        resp.set_cookie('auth', token, expires=datetime.now() +
-                        timedelta(hours=1), httponly=True)
+        resp = make_response(jsonify({'token': token}))
         return resp, 201
     except (InvalidUsernameError, InvalidPasswordError) as er:
         return jsonify({'error': er.args[0] or 'Unknown'}), 400

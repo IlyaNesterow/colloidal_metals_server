@@ -1,5 +1,4 @@
 from flask import *
-from datetime import datetime, timedelta
 
 from lib.errors import *
 from lib.handlers.change_credentials import change_content, change_pw, change_uname
@@ -28,11 +27,11 @@ def change_password():
 def change_username():
     try:
         username, token = change_uname(request.json)
-        resp = make_response(jsonify({'username': username}))
+        body = {'username': username}
         if token:
-            resp.set_cookie('auth', token, expires=datetime.now() +
-                            timedelta(hours=1), httponly=True)
-        return resp, 201
+            body['token'] = token
+
+        return jsonify(body), 201
     except (MissingCredentialsError, InvalidUsernameError) as er:
         return jsonify({'error': er.args[0] or 'Unknown'}), 400
     except Exception as ex:
