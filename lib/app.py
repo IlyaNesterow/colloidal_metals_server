@@ -13,11 +13,14 @@ load_dotenv(find_dotenv())
 
 @app.after_request
 def after_request(response: Response) -> Response:
-    header = response.headers
-    header['Access-Control-Allow-Origin'] = 'http://localhost:3000'
-    header['Access-Control-Allow-Methods'] = 'PUT, GET, DELETE, OPTIONS'
-    header['Access-Control-Allow-Headers'] = 'content-type, authorization'
-    header['Access-Control-Allow-Credentials'] = 'true'
+    response.headers.add(
+        'Access-Control-Allow-Origin',
+        'http://localhost, https://jovial-thompson-aed841.netlify.app')
+    response.headers.add('Access-Control-Allow-Methods',
+                         'PUT, GET, DELETE, OPTIONS')
+    response.headers.add('Access-Control-Allow-Headers',
+                         'content-type, authorization')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
 
 
