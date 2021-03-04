@@ -15,7 +15,7 @@ load_dotenv(find_dotenv())
 def after_request(response: Response) -> Response:
     response.headers.add(
         'Access-Control-Allow-Origin',
-        'http://localhost, https://jovial-thompson-aed841.netlify.app')
+        'https://jovial-thompson-aed841.netlify.app')
     response.headers.add('Access-Control-Allow-Methods',
                          'PUT, GET, DELETE, OPTIONS')
     response.headers.add('Access-Control-Allow-Headers',
