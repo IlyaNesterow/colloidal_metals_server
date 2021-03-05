@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom'
 
 import { getAuthInfo } from '../../redux/selectors'
 import { logout } from '../../redux/actions'
-import { handleLogout } from '../../helpers/localStorage'
 
 
 const AuthCtx: React.FC = () => {
@@ -16,7 +15,6 @@ const AuthCtx: React.FC = () => {
 
   const _handleLogout = (): void => {
     dispatch(logout())
-    handleLogout()
     history.push('/login')
   }
 

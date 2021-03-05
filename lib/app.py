@@ -9,8 +9,7 @@ from lib.blueprints.info import info_bp
 from lib.blueprints.view import view_bp
 from lib.helpers.other import cors_handling
 
-
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../static/build')
 
 load_dotenv(find_dotenv())
 

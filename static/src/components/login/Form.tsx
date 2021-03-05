@@ -5,8 +5,6 @@ import { isMobile } from 'react-device-detect'
 
 import { InputOnChange, SpanMouseEvent, DivOnClick } from '../../types/functions'
 import { setError, login, setLoading } from '../../redux/actions'
-import { login as loginInLS } from '../../helpers/localStorage'
-import { server } from '../../utils/variables'
 
 import PwField from '../global/PasswordField'
 import Info from './Info'
@@ -40,7 +38,7 @@ const Form: React.FC<{ label: string }> = ({ label }) => {
       token?: string
     } 
 
-    fetch(`${ server }login`, {
+    fetch('/auth/login', {
       method: 'PUT',
       body: JSON.stringify({ username, password }),
       headers: {'content-type': 'application/json'}
@@ -50,8 +48,7 @@ const Form: React.FC<{ label: string }> = ({ label }) => {
         if(res.error) return dispatch(setError(res.error))
         if(!res.token) throw Error('Token not found')
 
-        dispatch(login({ username, session: res.token as string }))
-        loginInLS(username, res.token as string)
+        dispatch(login({ username }))
         history.push('/')
       })
       .catch((err: Error) => dispatch(setError(err.message))) 

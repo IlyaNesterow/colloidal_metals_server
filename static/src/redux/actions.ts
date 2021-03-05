@@ -5,7 +5,6 @@ import {
   SET_DEFAULT_THEME,
   SET_ERROR,
   SET_LOADING,
-  SET_REMEMBER_ME,
   OPEN_CLOSE_MENU,
   OpenCloseMenu,
   Error,
@@ -15,8 +14,7 @@ import {
   SetDefaultTheme,
   ToggleTheme,
   SetError,
-  SetLoading,
-  SetRememberMe
+  SetLoading
 } from './types'
 
 
@@ -46,11 +44,6 @@ export const setError = (error: Error): SetError => ({
 export const setLoading = (loading: boolean): SetLoading => ({
   type: SET_LOADING,
   loading
-})
-
-export const setRememberMe = (remember: boolean): SetRememberMe => ({
-  type: SET_REMEMBER_ME,
-  remember
 })
 
 export const setMenuOpened = (opened: boolean): OpenCloseMenu => ({

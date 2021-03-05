@@ -2,6 +2,7 @@ from flask import *
 
 
 view_bp = Blueprint('view_blueprint', __name__,
+                    static_url_path='/',
                     static_folder='../../static/build',
                     template_folder='../../static/build')
 

@@ -8,7 +8,7 @@ from lib.helpers.decorators import check_for_json, verify_auth
 images_bp = Blueprint('images_blueprint', __name__, url_prefix='/images')
 
 
-@images_bp.route('/list', methods=['GET'])
+@images_bp.route('/list', methods=['PUT'])
 @verify_auth
 def list_images():
     try:
