@@ -3,9 +3,11 @@ from flask import *
 from lib.errors import *
 from lib.handlers.change_credentials import change_content, change_pw, change_uname
 from lib.helpers.decorators import check_for_json, verify_auth
+from lib.helpers.other import attach_auth_cookie
 
 
-edit_bp = Blueprint('edit_blueprint', __name__)
+edit_bp = Blueprint('edit_blueprint', __name__,
+                    url_prefix='/edit')
 
 
 @edit_bp.route('/password', methods=['PUT'])
@@ -27,11 +29,7 @@ def change_password():
 def change_username():
     try:
         username, token = change_uname(request.json)
-        body = {'username': username}
-        if token:
-            body['token'] = token
-
-        return jsonify(body), 201
+        return attach_auth_cookie(token, {'username': username}), 201
     except (MissingCredentialsError, InvalidUsernameError) as er:
         return jsonify({'error': er.args[0] or 'Unknown'}), 400
     except Exception as ex:

@@ -4,9 +4,11 @@ from lib.handlers.auth import verify_auth_credentials
 from lib.errors import *
 from lib.handlers.auth import get_username
 from lib.helpers.decorators import check_for_json
+from lib.helpers.other import attach_auth_cookie
 
 
-auth_bp = Blueprint('auth_blueprint', __name__)
+auth_bp = Blueprint('auth_blueprint', __name__,
+                    url_prefix='/auth')
 
 
 @auth_bp.route('/login', methods=['PUT'])
@@ -14,8 +16,7 @@ auth_bp = Blueprint('auth_blueprint', __name__)
 def login():
     try:
         token = verify_auth_credentials(request.json)
-        resp = make_response(jsonify({'token': token}))
-        return resp, 201
+        return attach_auth_cookie(token, {'success': True}), 201
     except (InvalidUsernameError, InvalidPasswordError) as er:
         return jsonify({'error': er.args[0] or 'Unknown'}), 400
     except Exception as ex:
