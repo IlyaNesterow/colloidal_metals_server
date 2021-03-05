@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import { getThemeInfo } from '../../redux/selectors'
+import { getAppInfo } from '../../redux/selectors'
 import InfoLog from '../../styles/infoLog'
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 }
 
 const Info: React.FC<Props> = ({ visible }) => {
-  const { theme } = useSelector(getThemeInfo)
+  const { theme } = useSelector(getAppInfo)
 
   const [ opacite, setOpacite ] = useState<boolean>(false)
   const [ higherZIndex, setHigherZIndex ] = useState<boolean>(false)

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { getThemeInfo } from '../redux/selectors'
+import { getAppInfo } from '../redux/selectors'
 import { setDefaultTheme, logout, login, setError } from '../redux/actions'
 import Global from '../styles/global'
 import { setDefaults } from '../helpers/localStorage'
@@ -10,7 +10,7 @@ import ErrorMessage from './global/ErrorMessage'
 
  
 const App: React.FC = () => {
-  const { theme } = useSelector(getThemeInfo)
+  const { theme } = useSelector(getAppInfo)
   const [ emptyBox, setEmptyBox ] = useState<boolean>(true)
 
   const dispatch = useDispatch()

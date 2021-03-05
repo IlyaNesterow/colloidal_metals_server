@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { getThemeInfo } from '../../../redux/selectors'
+import { getAppInfo } from '../../../redux/selectors'
 import { toggleTheme } from '../../../redux/actions'
 import { NavLinkCtx } from './types'
 import { toggleSmth } from '../../../helpers/localStorage'
@@ -9,7 +9,7 @@ import AuthCtx from '../AuthCtx'
 
 
 const ExtraNavLinks: React.FC = () => {
-  const { theme } = useSelector(getThemeInfo)
+  const { theme } = useSelector(getAppInfo)
 
   const dispatch = useDispatch()
 

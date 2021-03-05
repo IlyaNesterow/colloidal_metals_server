@@ -2,15 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { setError } from '../../redux/actions'
-import { getAppInfo, getThemeInfo } from '../../redux/selectors'
+import { getAppInfo } from '../../redux/selectors'
 import Container from '../../styles/errorMessage'
 import { DivOnClick } from '../../types/functions'
 
 
 const ErrorMessage: React.FC = () => {
   const dispatch = useDispatch()
-  const { error } = useSelector(getAppInfo)
-  const { theme } = useSelector(getThemeInfo)
+  const { error, theme } = useSelector(getAppInfo)
 
   const [ mounted, setMounted ] = useState<boolean>(false)
   const [ display, setDisplay ] = useState<boolean>(false)

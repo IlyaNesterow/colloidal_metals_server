@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import Eye from '../../resources/assets/Eye'
 import Container from '../../styles/passwordField'
 import { InputOnChange, DivOnClick } from '../../types/functions'
-import { getThemeInfo } from '../../redux/selectors'
+import { getAppInfo } from '../../redux/selectors'
 
 interface PwFieldProps {
   onChange: (val: string) => void
@@ -16,7 +16,7 @@ const PwField: React.FC<PwFieldProps> = ({ onChange }) => {
 
   const input = useRef<HTMLInputElement>(null)
 
-  const { theme } = useSelector(getThemeInfo)
+  const { theme } = useSelector(getAppInfo)
 
   useEffect(() => {
     if(input.current && text.length === 0) input.current.type = 'password'

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 
 import Container from '../../../styles/menu-content'
-import { getAppInfo, getThemeInfo } from '../../../redux/selectors'
+import { getAppInfo } from '../../../redux/selectors'
 import { setMenuOpened } from '../../../redux/actions'
 import { NavLinkGenerator } from './types'
 import { Pages } from '../../../types/index'
@@ -11,8 +11,7 @@ import ExtraLinks from './ExtraNavlinks'
 
 
 const Content: React.FC = () => {
-  const { menuOpened } = useSelector(getAppInfo)
-  const { theme } = useSelector(getThemeInfo)
+  const { menuOpened, theme } = useSelector(getAppInfo)
   
   const dispatch = useDispatch()
   

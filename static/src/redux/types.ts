@@ -1,16 +1,13 @@
 export interface AppState {
   loading: boolean
   menuOpened: boolean
+  theme: boolean
   error?: string
 }
 
 export interface AuthState {
   loggedIn: boolean
   username?: string
-}
-
-export interface ThemeState {
-  theme: boolean
 }
 
 export interface AuthData {
@@ -61,6 +58,5 @@ export interface OpenCloseMenu {
   opened: boolean
 }
 
-export type AppActionType =  SetLoading | SetError | OpenCloseMenu
-export type ThemeActionType = ToggleTheme | SetDefaultTheme
+export type AppActionType =  SetLoading | SetError | OpenCloseMenu | ToggleTheme | SetDefaultTheme
 export type AuthActionType = LogIn | LogOut 
