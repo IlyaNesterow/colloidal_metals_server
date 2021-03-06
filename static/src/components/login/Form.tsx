@@ -35,8 +35,8 @@ const Form: React.FC<{ label: string }> = ({ label }) => {
 
     interface ResponseJSON {
       error?: string
-      token?: string
-    } 
+      success?: boolean
+    }
 
     fetch('/auth/login', {
       method: 'PUT',
@@ -46,7 +46,7 @@ const Form: React.FC<{ label: string }> = ({ label }) => {
       .then(res => res.json()) 
       .then((res: ResponseJSON) => {
         if(res.error) return dispatch(setError(res.error))
-        if(!res.token) throw Error('Token not found')
+        if(!res.success) throw Error('Auth failed')
 
         dispatch(login({ username }))
         history.push('/')

@@ -20,7 +20,8 @@ def change_pw(data: dict) -> bool:
         return True
 
     uploaded = upload_json(
-        {'username': credentials['username'].lower(),'password': data['new_pw']}, 
+        {'username': credentials['username'].lower(),
+         'password': data['new_pw']},
         'credentials')
 
     if not uploaded:

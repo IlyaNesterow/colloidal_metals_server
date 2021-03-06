@@ -1,5 +1,5 @@
 
-export const Pages = ['content', 'pictures']
+export const Pages = ['content', 'pictures', 'credentials']
 
 interface Section {
   sectionName: string

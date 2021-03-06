@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import Container from '../../styles/images'
 import Image from './Image'
 import { HandleClickOnDeleteImg } from '../../types/functions'
-import Modal from './modal'
+import Modal from '../modal'
 
 import { CloseModalCtx } from '../../helpers/contexts'
 

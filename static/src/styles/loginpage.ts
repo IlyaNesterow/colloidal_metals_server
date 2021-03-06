@@ -26,31 +26,15 @@ const Container = styled.div<PropsWithTheme>`
     font-size: 1rem;
     font-weight: 500;
   }
-  #content p{
-    margin-top: 1.5rem;
-    margin-bottom: .5rem;
-    margin-left: .9rem;
-    color: #${ props => props.darkTheme ? 'bbb' : '555' };
-    font-weight: 500;
-    letter-spacing: .03rem;
-  }
   #content input{
-    width: 90%;
-    height: 2.8rem;
-    border: none;
-    background-color: #${ props => props.darkTheme ? '252525' : 'f5f5f5' };
-    padding: .5rem 1.3rem;
-    border-radius: 1.8rem;
-    font-size: 1.1rem;
-    transition: box-shadow .3s;
-    color: #${ props => props.darkTheme ? 'ddd' : '333' };
+    width: 100%;
   }
   #button{
     display: flex;
     align-items: center;
     justify-content: center;
     margin-top: 1.8rem;
-    width: 90%;
+    width: 100%;
     height: 2.8rem;
     border-radius: 1.8rem;
     font-size: 1.1rem;
@@ -60,10 +44,6 @@ const Container = styled.div<PropsWithTheme>`
     font-family: 'Noto Sans TC', Arial, Helvetica, sans-serif;
     color: #eee;  
     transition: background-color .5s;
-  }
-  #content input:focus{
-    outline: none;
-    box-shadow: 0 0 .1rem #888;
   }
   #button:focus{
     outline: none;
@@ -128,29 +108,10 @@ const Container = styled.div<PropsWithTheme>`
       box-shadow: 0 2.5rem 0 0;
     }
   }
-
-  @media only screen and (max-width: 1000px){
-    #content{
-      width: 60%;
-    }
-  }
   @media only screen and (max-width: 500px){
-    #content{
-      width: 80%;
-    }
     #content h1{
       margin-bottom: .2rem; 
       font-size: 1.7rem;
-    }
-    #content input{
-      height: 2.3rem;
-      padding: .5rem 1.3rem;
-      font-size: 1rem;
-    }
-    #content p{
-      margin-top: 1.1rem;
-      margin-bottom: .3rem;
-      margin-left: .7rem;
     }
     #button{
       margin-top: 1.5rem;

@@ -31,6 +31,51 @@ const global = createGlobalStyle<PropsWithTheme>`
   a{
     text-decoration: none;
   }
+  h2{
+    color: #${ props => props.darkTheme ? 'eee' : '111' };
+  }
+  form p{
+    margin-top: 1.5rem;
+    margin-bottom: .5rem;
+    margin-left: .9rem;
+    color: #${ props => props.darkTheme ? 'bbb' : '555' };
+    font-weight: 500;
+    letter-spacing: .03rem;
+  }
+  form input{
+    height: 2.8rem;
+    border: none;
+    background-color: #${ props => props.darkTheme ? '252525' : 'f5f5f5' };
+    padding: .5rem 1.3rem;
+    border-radius: 1.8rem;
+    font-size: 1.1rem;
+    transition: box-shadow .3s;
+    color: #${ props => props.darkTheme ? 'ddd' : '333' };
+  }
+  input:focus{
+    outline: none;
+    box-shadow: 0 0 .1rem #888;
+  }
+  @media only screen and (max-width: 1000px){
+    form, #content{
+      min-width: 60%;
+    }
+  }
+  @media only screen and (max-width: 500px){
+    form, #content{
+      min-width: 80%;
+    }
+    form input{
+      height: 2.3rem;
+      padding: .5rem 1.3rem;
+      font-size: 1rem;
+    }
+    form p{
+      margin-top: 1.1rem;
+      margin-bottom: .3rem;
+      margin-left: .7rem;
+    }
+  }
 `
 
 export default global

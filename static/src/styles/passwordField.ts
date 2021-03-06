@@ -8,13 +8,14 @@ interface props extends PropsWithTheme{
 const InputContainer = styled.div<props>`
   position: relative;
   height: 2.8rem;
+  width: 100%;
 
   input{
     position: absolute;
     top: 0; left: 0;
   } 
   #eye{
-    top: calc(50% - .95rem); right: 3rem;
+    top: calc(50% - .95rem); right: 1rem;
     position: absolute;
   }
   #eye svg{

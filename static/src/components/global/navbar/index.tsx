@@ -9,7 +9,7 @@ import { getAppInfo, getAuthInfo } from '../../../redux/selectors'
 
 const Navbar: React.FC = () => {
   const { menuOpened, theme } = useSelector(getAppInfo)
-  const { loggedIn } = useSelector(getAuthInfo)
+  //const { loggedIn } = useSelector(getAuthInfo)
 
   return(
     <Container
@@ -17,9 +17,9 @@ const Navbar: React.FC = () => {
       opened={ menuOpened }
     >
       <AuthCtx/>
-      { loggedIn && <MenuToggler/> }
+      <MenuToggler/> 
     </Container>
   )
 }
-
+//{ loggedIn && <MenuToggler/> }
 export default Navbar
