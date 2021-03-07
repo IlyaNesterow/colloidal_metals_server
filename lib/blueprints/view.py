@@ -11,6 +11,7 @@ view_bp = Blueprint('view_blueprint', __name__,
 @view_bp.route('/login', methods=['GET'])
 @view_bp.route('/content', methods=['GET'])
 @view_bp.route('/pictures', methods=['GET'])
+@view_bp.route('/credentials', methods=['GET'])
 def home():
     try:
         if request.method != 'GET':

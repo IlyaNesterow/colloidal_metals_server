@@ -8,18 +8,19 @@ def list_all_images() -> None:
     client = S3client()
 
     stuff = client.list_objects('images/')
-    output = [ f"https://{environ['AWS_BUCKET_HOST']}/{img['Key']}" for img in stuff ]
+    output = [
+        f"https://{environ['AWS_BUCKET_HOST']}/{img['Key']}" for img in stuff]
     return output
 
 
 def delete_img(obj_name: str) -> None:
     client = S3client()
     client.delete_file(f'images/{obj_name}')
-    
+
 
 def presigned_url(data: dict) -> str:
     name = data.get('name')
-    
+
     if not name or type(name) != str:
         raise MissingCredentialsError('Incorrect image name')
 

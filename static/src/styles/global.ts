@@ -12,7 +12,6 @@ const global = createGlobalStyle<PropsWithTheme>`
     box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
     font-weight: 200;
-    
   }
   .no-select{
     user-select: none; 
@@ -31,8 +30,22 @@ const global = createGlobalStyle<PropsWithTheme>`
   a{
     text-decoration: none;
   }
-  h2{
+  h1, h2{
     color: #${ props => props.darkTheme ? 'eee' : '111' };
+  }
+  p{
+    color: #${ props => props.darkTheme ? 'fff' : '222' };
+  }
+  button, label{
+    margin-top: 1.8rem;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 1.8rem;
+    background-color: #3355ee;
+    font-size: .9rem;
+    font-family: 'Noto Sans TC', Arial, Helvetica, sans-serif;
+    color: #eee;  
+    transition: background-color .5s;
   }
   form p{
     margin-top: 1.5rem;
@@ -52,9 +65,17 @@ const global = createGlobalStyle<PropsWithTheme>`
     transition: box-shadow .3s;
     color: #${ props => props.darkTheme ? 'ddd' : '333' };
   }
+  #tooltip{
+    color: #${ props => props.darkTheme ? 'fff' : '222' };
+  }
   input:focus{
-    outline: none;
     box-shadow: 0 0 .1rem #888;
+  }
+  *:focus{
+    outline: none;
+  }
+  button:hover, label:hover{
+    background-color: #3355aa;
   }
   @media only screen and (max-width: 1000px){
     form, #content{

@@ -1,13 +1,13 @@
 import styled from 'styled-components'
 
 interface Props {
-  loading: boolean
+  _loading: boolean
 }
 
 const Container = styled.div<Props>`
   position: fixed;
   top: 0;
-  left: ${ props => props.loading ? 0 : -100 }vw;
+  left: ${ props => props._loading ? 0 : -100 }vw;
   width: 100vw;
   height: 100vh;
   z-index: 10;
@@ -21,6 +21,7 @@ const Container = styled.div<Props>`
     position: relative;
     width: 30vh;
     height: 30vh;
+    margin-left: 2%;
   }
   .lds-hourglass:after {
     content: " ";

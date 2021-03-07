@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { isMobile } from 'react-device-detect'
 
 import { useSelector } from 'react-redux'
 import { getAppInfo } from '../redux/selectors'
 import { DivOnClick } from '../types/functions'
+
 
 
 interface PropsForUseLoadingButton {
@@ -96,10 +98,12 @@ export const useDelay: GenericIdentityFn<any> = (arg, delay) => {
   return newValue
 }
 
+
 type UseViewWithDelay = (delay: number) => {
   ref: React.Ref<HTMLDivElement | any>
   inView: boolean
 }
+
 
 export const useInViewWithDelay: UseViewWithDelay = (delay) => {
   const { ref, inView } = useInView()
@@ -107,4 +111,24 @@ export const useInViewWithDelay: UseViewWithDelay = (delay) => {
   const _inView = useDelay(inView, delay)
 
   return { ref, inView: _inView }
+}
+
+type UseHover = () => {
+  element: React.Ref<HTMLDivElement | any>
+  on: boolean
+}
+
+export const useHover: UseHover = () => {
+  const [ on, setOn ] = useState<boolean>(false)
+
+  const element = useRef<null | HTMLDivElement>(null)
+
+  useEffect(() => {
+    if(element.current && !isMobile){
+      element.current.addEventListener('mouseenter', () => setOn(true))
+      element.current.addEventListener('mouseleave', () => setOn(false))
+    }
+  })
+
+  return { on, element }
 }

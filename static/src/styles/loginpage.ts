@@ -45,9 +45,6 @@ const Container = styled.div<PropsWithTheme>`
     color: #eee;  
     transition: background-color .5s;
   }
-  #button:focus{
-    outline: none;
-  }
   #button:hover{
     background-color: #3355aa;
   }

@@ -26,7 +26,7 @@ const Router: React.FC = () => (
       />
       <SpecificRoute
         exact
-        path="/images"
+        path="/pictures"
         privateRoute
         component={ Images }
       />

@@ -3,12 +3,16 @@ import { MenuProps } from '../types/styles'
 
 
 const Navbar = styled.nav<MenuProps>`
-  width: 100vw;
+  width: 100vw; height: 3.4rem;
   transition: background-color .2s;
-  background-color: ${ props => props.darkTheme ? '#111' : '#fff' };
+  background: linear-gradient(#${ props => props.darkTheme ? '111' : 'fff' }, transparent);
   display: flex;
   justify-content: space-between;
   position: relative;
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 4;
+
 
   #Menu{
     width: 1.3rem;

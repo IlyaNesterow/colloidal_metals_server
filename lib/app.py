@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, abort, render_template
 from dotenv import find_dotenv, load_dotenv
 
 from lib.helpers.error_handlers import *
@@ -28,3 +28,18 @@ app.register_error_handler(403, forbidden)
 app.register_error_handler(404, page_not_found)
 app.register_error_handler(405, method_not_allowed)
 app.register_error_handler(500, server_error)
+
+'''
+@app.route('/', methods=['GET'])
+@app.route('/login', methods=['GET'])
+@app.route('/content', methods=['GET'])
+@app.route('/pictures', methods=['GET'])
+@app.route('/credentials', methods=['GET'])
+def home():
+    try:
+        if request.method != 'GET':
+            return abort(405, 'Only get method is allowed for this endpoint')
+        return render_template('index.html')
+    except Exception:
+        return 'The webpage is temporarily unavailable', 500
+'''

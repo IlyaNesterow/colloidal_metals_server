@@ -26,14 +26,6 @@ const Form = styled.form<PropsWithTheme>`
     margin-top: 1.8rem;
     width: 100%;
     height: 2.8rem;
-    border-radius: 1.8rem;
-    font-size: 1.1rem;
-    border: none;
-    background-color: #3355ee;
-    font-size: .9rem;
-    font-family: 'Noto Sans TC', Arial, Helvetica, sans-serif;
-    color: #eee;  
-    transition: background-color .5s;
   }
 `
 

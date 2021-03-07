@@ -15,7 +15,7 @@ const LoadingScene: React.FC = () => {
   }, [ loading ])
 
   return(
-    <Container loading={ loading }>
+    <Container _loading={ loading }>
       <div className="lds-hourglass"></div>
     </Container>
   )

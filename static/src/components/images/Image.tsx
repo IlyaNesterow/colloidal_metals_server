@@ -3,6 +3,9 @@ import { useSelector } from 'react-redux'
 
 import { getAppInfo } from '../../redux/selectors'
 import Container from '../../styles/image'
+import CopyURL from './CopyURL'
+import OpeninModal from './OpenInModal'
+import DeleteImage from './DeleteImg'
 
 import { DivOnClick } from '../../types/functions'
 
@@ -21,14 +24,11 @@ const Image: React.FC<Props> = ({ src, onClickOnDelete, onClickInModal }) => {
         src={ src }
         alt="Your pic from aws S3"
       />
-      <div 
-        id="delete-btn"
-        onClick={ onClickOnDelete }
-      >🗑</div>
-      <div
-        id="open-in-modal-btn"
-        onClick={ onClickInModal }
-      >🔍</div>
+      <div id="image-controls">
+        <DeleteImage clickHandler={ onClickOnDelete }/>
+        <OpeninModal clickHandler={ onClickInModal }/>
+        <CopyURL src={ src }/>
+      </div>
     </Container>
   )
 }
