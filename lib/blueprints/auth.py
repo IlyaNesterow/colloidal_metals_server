@@ -32,3 +32,10 @@ def get_uname():
         return jsonify({'error': er.args[0] or 'Unknown'}), 400
     except Exception as ex:
         return jsonify({'error': ex.args[0] or 'Server Error'}), 500
+
+
+@auth_bp.route('/logout', methods=['GET'])
+def logout():
+    resp = make_response({'logout': True})
+    resp.delete_cookie('auth')
+    return resp, 201

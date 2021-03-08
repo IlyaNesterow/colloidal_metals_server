@@ -77,6 +77,12 @@ const global = createGlobalStyle<PropsWithTheme>`
   button:hover, label:hover{
     background-color: #3355aa;
   }
+  #close-error-log-cross{
+    background-color: #${ props => props.darkTheme ? 'eee' : '333' };
+  }
+  #close-error-log-cross::after{
+    background-color: #${ props => props.darkTheme ? 'eee' : '333' };
+  }
   @media only screen and (max-width: 1000px){
     form, #content{
       min-width: 60%;

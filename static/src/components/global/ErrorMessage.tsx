@@ -1,29 +1,25 @@
-import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
 import { setError } from '../../redux/actions'
-import { getAppInfo } from '../../redux/selectors'
 import Container from '../../styles/errorMessage'
 import { DivOnClick } from '../../types/functions'
 
 
-const ErrorMessage: React.FC = () => {
+const ErrorMessage: React.FC<{ error: string }> = ({ error }) => {
   const dispatch = useDispatch()
-  const { error, theme } = useSelector(getAppInfo)
-
-  const [ mounted, setMounted ] = useState<boolean>(false)
-  const [ display, setDisplay ] = useState<boolean>(false)
 
   useEffect(() => {
-    const bool = Boolean(error)
-    setDisplay(bool)
-    mounted
-      ? setTimeout(() => setMounted(bool), 500)
-      : setMounted(bool)
-  }, [ error, mounted, setDisplay, setMounted ])
+    window.scrollTo(0, 0)
+    document.body.style.overflow = 'hidden'
+    setTimeout(() => {
+      dispatch(setError(undefined))
+      document.body.style.overflow = 'unset'
+    }, 5000)
 
-  useEffect(() => {
-    if(error) setTimeout(() => dispatch(setError(undefined)), 5000)
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
   })
 
   useEffect(() => {
@@ -36,34 +32,24 @@ const ErrorMessage: React.FC = () => {
   const handleKeyDown: (e: KeyboardEvent) => void = (e) => {
     if(e.keyCode === 27) {
       dispatch(setError(undefined))
-      setDisplay(false)
-      setTimeout(() => setMounted(false), 500)
     }
   }
 
-  const onClose: DivOnClick = () => 
-    dispatch(setError(undefined))
+  const onClose: DivOnClick = () => dispatch(setError(undefined))
 
   return(
-    mounted 
-      ? (
-          <Container
-            darkTheme={ theme }
-            mounted={ display }
-          >
-            <div id="inner-container">
-              <div 
-                id="close-error-log"
-                onClick={ onClose }
-              >
-                <div id="close-error-log-cross"></div>
-              </div>
-              <h5>{ error }</h5>
-            </div>
-          </Container>
-        )
-      : null
+    <Container>
+      <div id="inner-container">
+        <div 
+          id="close-error-log"
+          onClick={ onClose }
+        >
+          <div id="close-error-log-cross"></div>
+        </div>
+        <h5>{ error }</h5>
+      </div>
+    </Container>
   )  
 }
 
-export default ErrorMessage
+export default React.memo(ErrorMessage)

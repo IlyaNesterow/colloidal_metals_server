@@ -10,7 +10,7 @@ import ErrorMessage from './global/ErrorMessage'
 
  
 const App: React.FC = () => {
-  const { theme } = useSelector(getAppInfo)
+  const { theme, error } = useSelector(getAppInfo)
   const [ emptyBox, setEmptyBox ] = useState<boolean>(true)
 
   const dispatch = useDispatch()
@@ -46,7 +46,7 @@ const App: React.FC = () => {
   return (
     <div>
       <Global darkTheme={ theme }/>
-      <ErrorMessage/>
+      { error && <ErrorMessage error={ error }/> }
       { !emptyBox && <Router/> }
     </div>
   )

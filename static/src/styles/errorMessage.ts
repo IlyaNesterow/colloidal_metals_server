@@ -1,26 +1,23 @@
 import styled from 'styled-components'
-import { PropsWithTheme } from '../types/styles'
 
-interface Props extends PropsWithTheme{
-  mounted: boolean
-}
 
-const Container = styled.div<Props>`
-  position: absolute;
+const Container = styled.div`
+  position: fixed;
+  top: 0; left: 0;
   width: 100vw;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 6;
-  backdrop-filter:  ${ props => props.mounted ? 'blur(20px)' : '' };;
+  backdrop-filter: blur(20px);
 
   #inner-container{
     width: 40%;
     height: 50%;
     background-color: rgba(255, 50, 50, .2);
     transition: opacity .5s;
-    opacity: ${ props => props.mounted ? '1' : '0' };
+    opacity: 1;
     position: relative;
     display: flex;
     justify-content: center;
@@ -34,14 +31,12 @@ const Container = styled.div<Props>`
   }
   #close-error-log-cross{
     width: 25px; height: 1px;
-    background-color: #${ props => props.darkTheme ? 'eee' : '333' };
     transform: rotateZ(45deg);
   }
   #close-error-log-cross::after{
     content: "";
     position: absolute;
     width: 25px; height: 1px;
-    background-color: #${ props => props.darkTheme ? 'eee' : '333' };
     transform: rotateZ(-90deg);
   }
   h5{

@@ -5,7 +5,6 @@ import { SpecificRoute } from './SpecificRoute'
 
 import Navbar from '../components/global/navbar'
 import Menu from '../components/global/menu/Menu'
-import ErrorMessage from '../components/global/ErrorMessage'
 
 import LoginPage from '../components/login'
 import Images from '../components/images'
@@ -17,7 +16,6 @@ const Router: React.FC = () => (
   <BrowserRouter>
     <Navbar/>
     <Menu/>
-    <ErrorMessage/>
     <Switch>
       <SpecificRoute
         exact

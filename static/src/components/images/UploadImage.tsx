@@ -18,11 +18,11 @@ const ImageUploader: React.FC<Props> = ({ onSuccess }) => {
   const [ image, setImage ] = useState<string>('')
   const [ name, setName ] = useState<string>('')
   const [ file, setFile ] = useState<File | null>(null)
-  const [ url, setUrl ] = useState<string>('')
 
   const close = useContext(CloseModalCtx)
 
   const input = useRef<null | HTMLInputElement>(null)
+  const imgUrl = useRef<string>('')
 
   const onImgChange: React.FocusEventHandler<HTMLInputElement> = (e) => {
     if(e.target.files) {
@@ -41,7 +41,7 @@ const ImageUploader: React.FC<Props> = ({ onSuccess }) => {
     }
     
     dispatch(setLoading(true))
-    console.log(JSON.stringify({ name }))
+
     fetch('/images/get_presigned_url', {
       method: 'PUT',
       body: JSON.stringify({ name }),
@@ -51,29 +51,29 @@ const ImageUploader: React.FC<Props> = ({ onSuccess }) => {
     })
       .then(res => res.json())
       .then((res: APIResp) => {
-        console.log(res)
         if(res.error) throw new Error(res.error)
         if(!res.url) throw new Error('Url not found')
 
         return res.url
       })
       .then((url: string) => {
-        setUrl(url.split('?')[0])
-        return fetch(url, {
-          method: 'PUT',
-          body: file,
-          headers: {
-            'Content-Type': file?.type as string
-          }
-        })
+        if(file){
+          imgUrl.current = url
+          return fetch(url, {
+            method: 'PUT',
+            body: file,
+            headers: {
+              'Content-Type': file.type
+            }
+          })
+        } else throw new Error('File not found')
       })
       .then(res => {
         if(res.ok) return 
-        else throw new Error('S3 refused')
+        else throw new Error('Goaty refused')
       })
-      .then(res => {
-        console.log(res)
-        onSuccess(url)
+      .then(() => {
+        onSuccess(imgUrl.current.split('?')[0])
       })
       .catch((err: Error) => dispatch(setError(err.message)))
       .finally(() => {
@@ -126,4 +126,6 @@ const ImageUploader: React.FC<Props> = ({ onSuccess }) => {
   )
 }
 
-export default ImageUploader
+export default React.memo(ImageUploader)
+
+//https://calloid-metals-content-temporary.s3.amazonaws.com/images/madhur-chadha-syjMwInDTHI-unsplash.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUEI4YMWOSSZC2Y63%2F20210308%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210308T170720Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=e9963d1b2e6551c1a76d05d350260b289eb8b7aa68c4aa01d9c0d03039542176

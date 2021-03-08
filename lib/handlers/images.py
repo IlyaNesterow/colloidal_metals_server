@@ -33,5 +33,5 @@ def presigned_url(data: dict) -> str:
         raise FormatError('Not acceptable format')
 
     client = S3client()
-    url = client.get_presigned_url(f'images/{name}', 10000)
+    url = client.get_presigned_url(f'images/{name}')
     return url
