@@ -5,11 +5,6 @@ import { MenuProps } from '../types/styles'
 const Navbar = styled.nav<MenuProps>`
   width: 100vw; height: 3.4rem;
   transition: background-color .2s;
-  background-color: #${ props => props.darkTheme ? '111' : 'fff' }; 
-  background-image: -webkit-linear-gradient(bottom, #${ props => props.darkTheme ? '111' : 'fff' }, transparent); 
-  background-image:    -moz-linear-gradient(to bottom, #${ props => props.darkTheme ? '111' : 'fff' }, transparent); 
-  background-image:      -o-linear-gradient(to bottom, #${ props => props.darkTheme ? '111' : 'fff' }, transparent);
-  background-image:         linear-gradient(to bottom, #${ props => props.darkTheme ? '111' : 'fff' }, transparent);
   display: flex;
   justify-content: space-between;
   position: relative;
