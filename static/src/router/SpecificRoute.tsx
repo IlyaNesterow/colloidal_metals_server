@@ -25,7 +25,7 @@ export const SpecificRoute: React.FC<RouteProps> = ({
       render={(props) =>
         loggedIn === privateRoute 
           ? <Component {...props} /> 
-          : <Redirect to={ redirectTo ? redirectTo : '/' } />
+          : <Redirect to={ redirectTo ? redirectTo : '/login' } />
       }
       {  ...rest }
     />

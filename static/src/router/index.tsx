@@ -31,7 +31,7 @@ const Router: React.FC = () => (
       <SpecificRoute
         exact
         path="/content"
-        privateRoute
+        //privateRoute
         component={ Content }
       />
       <SpecificRoute

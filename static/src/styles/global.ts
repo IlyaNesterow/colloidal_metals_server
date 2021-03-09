@@ -41,11 +41,16 @@ const global = createGlobalStyle<PropsWithTheme>`
     font-size: 1.1rem;
     border: none;
     border-radius: 1.8rem;
+    padding: .7rem;
     background-color: #3355ee;
     font-size: .9rem;
     font-family: 'Noto Sans TC', Arial, Helvetica, sans-serif;
     color: #eee;  
-    transition: background-color .5s;
+    transition: all .5s;
+  }
+  button:disabled,
+  button[disabled]{
+    color: #aaa;
   }
   form p{
     margin-top: 1.5rem;
@@ -74,7 +79,7 @@ const global = createGlobalStyle<PropsWithTheme>`
   *:focus{
     outline: none;
   }
-  button:hover, label:hover{
+  button:enabled:hover, label:hover{
     background-color: #3355aa;
   }
   #close-error-log-cross{

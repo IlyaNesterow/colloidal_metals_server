@@ -7,7 +7,7 @@ interface Section {
 }
 
 interface SectionWithImage extends Section {
-  bgImage?: string
+  bgImage: string
 }
 
 interface SectionWithResizableImage extends SectionWithImage {
@@ -30,7 +30,7 @@ export interface VideoContent{
   description: string
 }
 
-export interface PdfFile extends SectionWithResizableImage {
+export interface PdfFile extends Section {
   url: string
   description: string
 }
@@ -78,4 +78,9 @@ export interface Content {
     gold: Page
     copper: Page
   } 
+}
+
+export interface EditSectionProps<T>{
+  content: T
+  section: string
 }

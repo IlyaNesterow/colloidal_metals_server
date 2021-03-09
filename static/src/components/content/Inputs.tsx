@@ -3,7 +3,7 @@ import React from 'react'
 interface Props<T> {
   label: string 
   value: T
-  onChange: React.FormEventHandler<HTMLInputElement | HTMLTextAreaElement>
+  onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
 }
 
 interface NumericInput extends Props<number> {
@@ -13,8 +13,8 @@ interface NumericInput extends Props<number> {
 
 export const NumberInput: React.FC<NumericInput> = ({ min = 0, max = 0, label, ...props }) => {
   return(
-    <div>
-      <p>{ label }</p>
+    <div >
+      <p className="no-select">{ label }</p>
       <input 
         type="number" 
         max={ max }
@@ -32,9 +32,9 @@ interface UrlProps extends Props<string> {
 export const UrlInput: React.FC<UrlProps> = ({ label, placeholder = 'url', ...props }) => {
   return(
     <div>
-      <p>{ label }</p>
+      <p className="no-select">{ label }</p>
       <input 
-        type="number" 
+        type="url" 
         placeholder={ placeholder }
         { ...props }
       />
@@ -43,15 +43,15 @@ export const UrlInput: React.FC<UrlProps> = ({ label, placeholder = 'url', ...pr
 }
 
 interface TextAreaProps extends Props<string> {
-  placeholder: string
+  placeholder?: string
   min: number
   max: number
 }
 
-export const TextInput: React.FC<TextAreaProps> = ({ min, max, label, ...props }) => {
+export const TextInput: React.FC<TextAreaProps> = ({ min, max, label, placeholder = '', ...props }) => {
   return(
     <div>
-      <p>{ label }</p>
+      <p className="no-select">{ label }</p>
       <textarea
         maxLength={ max }
         minLength={ min }
@@ -68,7 +68,7 @@ interface TitleProps extends Props<string> {
 export const TitleInput: React.FC<TitleProps> = ({ label, placeholder = '', ...props }) => {
   return(
     <div>
-      <p>{ label }</p>
+      <p className="no-select">{ label }</p>
       <input 
         type="text"
         placeholder={ placeholder }

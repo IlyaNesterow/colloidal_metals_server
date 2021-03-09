@@ -10,9 +10,12 @@ const Container = styled.div<PropsWithTheme>`
   width: 100vw;
   height: 100vh;
   backdrop-filter: blur(25px);
+  overflow: scroll;
 
   #centred{
     width: 100%; height: 100%;
+    overflow: scroll;
+
     display: flex;
     align-items: center;
     justify-content: center;
