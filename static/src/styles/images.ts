@@ -15,7 +15,7 @@ const Container = styled.div`
   }
   #img-in-modal{
     max-width: 90%;
-    max-height: 90%
+    max-height: 80%
   }
   #upload-img-btn{
     width: 20%;
