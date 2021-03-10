@@ -1,3 +1,4 @@
+import { HandleEdit } from './functions'
 
 export const Pages = ['content', 'pictures', 'credentials']
 
@@ -25,11 +26,6 @@ export interface SubSection extends SectionWithResizableImage{
   _arguments: Argument[]
 }
 
-export interface VideoContent{
-  url: string
-  description: string
-}
-
 export interface PdfFile extends Section {
   url: string
   description: string
@@ -37,7 +33,7 @@ export interface PdfFile extends Section {
 
 export interface Introduction extends SectionWithImage {
   text: string
-  videos?: VideoContent[]
+  videos?: Link[]
 }
 
 export interface Info extends SectionWithImage {
@@ -65,10 +61,17 @@ export interface OtherSources extends Section {
 
 export interface Page {
   introduction: Introduction
-  info: Info
-  howProduced?: HowProduced
+  information: Info
+  synthesys?: HowProduced
   sellers: Sellers
-  otherSources?: OtherSources
+  other?: OtherSources
+}
+
+export interface IPages {
+  silver: Page
+  platinum: Page
+  gold: Page
+  copper: Page
 }
 
 export interface Content {
@@ -77,10 +80,17 @@ export interface Content {
     platinum: Page
     gold: Page
     copper: Page
-  } 
+  }
 }
 
 export interface EditSectionProps<T>{
   content: T
-  section: string
+  page: string
+  handleSubmit: HandleEdit<T>
 }
+
+export type SectionName = keyof Page //'introduction' | 'information' | 'synthesys' | 'sellers' | 'other'
+export type SectionType = Content['pages'][keyof IPages][keyof Page]
+
+export type PageName = keyof IPages
+export type PageType = Content['pages'][keyof IPages]

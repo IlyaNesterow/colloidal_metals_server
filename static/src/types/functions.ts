@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { Page } from './'
-
 export type InputOnChange = React.ChangeEventHandler<HTMLInputElement>
 
 export type ButtonOnClick = React.MouseEventHandler<HTMLButtonElement>
@@ -16,4 +14,10 @@ export type HandleClickOnDeleteImg = (img: string) => void
 
 export type HandleClickOnImageInModal = (img: string) => void
 
-export type HandleEdit = (edited: Page) => void
+export interface HandleEdit<T> {
+  (edited: T): void
+}
+
+export interface ValidateEdit<T> {
+  (data: T): string | undefined
+}

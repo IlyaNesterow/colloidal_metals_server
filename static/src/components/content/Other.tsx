@@ -1,90 +1,40 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 
-import { TitleInput, UrlInput } from './Inputs'
+import { useInputs, useSubmit } from '../../helpers/hooks'
 
-import { OtherSources, EditSectionProps, Link } from '../../types'
+import { validateOther } from '../../helpers/validators'
+
+import { OtherSources, EditSectionProps, SectionType, Link } from '../../types'
+import { HandleEdit, ValidateEdit } from '../../types/functions'
+import Links from './Links'
 
 
-const Other: React.FC<EditSectionProps<OtherSources | undefined>> = ({ content, section }) => {
-  const [ sectionName, setSectionName ] = useState<string>(
-    content
-      ? content.sectionName
-      : ''
+const Other: React.FC<EditSectionProps<OtherSources | undefined>> = ({ content, page, handleSubmit }) => {
+  const [ urls, setUrls ] = useState<Link[]>(content ? content.urls : [])
+  
+  const { titleComponent, sectionNameComponent, title, sectionName } = useInputs(
+    'other sources', 
+    { title: content?.title, sectionName: content?.sectionName }
   )
-  const [ urls, setUrls ] = useState<Link[]>(
-    content
-      ? content.urls
-      : []
+
+  const { button, errorLog } = useSubmit(
+    handleSubmit as HandleEdit<SectionType>, 
+    validateOther as ValidateEdit<SectionType>,
+    { urls: urls, title, sectionName }
   )
- 
-  const urlOnChange = useCallback((url: Link, e: React.FormEvent<HTMLInputElement>) => {
-    setUrls([
-      ...urls.filter(v => (v.url !== url.url)),
-      { 
-        ...url,
-        _name: url._name
-      }
-    ])
-  }, [ urls ])
-
-  const nameOnChange = useCallback((url: Link, e: React.FormEvent<HTMLInputElement>) => {
-    setUrls([
-      ...urls.filter(v => (v.url !== url.url)),
-      { 
-        ...url,
-        _name: url._name
-      }
-    ])
-  }, [ urls ])
-
-  const deleteUrl = useCallback((index: number) => {
-    const updatedSellers = urls
-    updatedSellers.splice(index, 1)
-    setUrls([...updatedSellers]) 
-  }, [ urls ])
 
   return(
     <div>
-      <h2>{ `Other sources of ${ section }` }</h2>
-      <TitleInput
-        label="How you want sources section to be labeled"
-        value={ sectionName }
-        onChange={(e) => setSectionName(e.currentTarget.value)}
+      <h2>{ `Other sources of ${page}` }</h2>
+      { titleComponent }
+      { sectionNameComponent }
+      <Links
+        links={ urls }
+        setLinks={ setUrls }
+        _key="sources"
       />
-      {
-        urls.map((u, index) => (
-          <div 
-            id="url-description"
-            key={ u.url + index }
-          >
-            <UrlInput
-              label="URL"
-              value={ u.url }
-              placeholder="https://seller.com"
-              onChange={(e) => urlOnChange(u, e as React.FormEvent<HTMLInputElement>)}
-            />
-            <TitleInput
-              label="Label"
-              value={ u._name }
-              placeholder="Vasya Pupkin"
-              onChange={(e) => nameOnChange(u, e as React.FormEvent<HTMLInputElement>) }
-            />
-            <span 
-              id="remove-smth"
-              className="no-select"
-              onClick={() => deleteUrl(index)}
-            >🗑️</span>
-          </div>
-        ))
-      }
-      <span
-        onClick={() => {
-          setUrls([
-            ...urls,
-            { _name: '', url: '' }
-          ])
-        }}
-      >Add URL</span>
+      { errorLog }
+      { button }
     </div>
   )
 }

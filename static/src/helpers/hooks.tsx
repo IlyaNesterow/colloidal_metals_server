@@ -1,11 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useInView } from 'react-intersection-observer'
+import React, { useEffect, useRef, useState, useCallback, MouseEventHandler } from 'react'
 import { isMobile } from 'react-device-detect'
-
 import { useSelector } from 'react-redux'
-import { getAppInfo } from '../redux/selectors'
-import { DivOnClick } from '../types/functions'
 
+import { getAppInfo } from '../redux/selectors'
+
+import { UrlInput, TitleInput, TextInput, NumberInput } from '../components/content/Inputs'
+
+import { DivOnClick, HandleEdit, ValidateEdit } from '../types/functions'
+import { SectionType } from '../types'
 
 
 interface PropsForUseLoadingButton {
@@ -40,79 +42,6 @@ export const useLoadingButton: (props: PropsForUseLoadingButton) => [ JSX.Elemen
   return [ output ]
 }
 
-type TransformHook = (moveX?: boolean, moveY?: boolean) => {
-  transformX: number
-  transformY: number 
-  currentY: number
-  currentX: number
-  setCurrentX: React.Dispatch<React.SetStateAction<number>>
-  setCurrentY: React.Dispatch<React.SetStateAction<number>>
-}
-
-export const useTransforms: TransformHook = (moveX, moveY) => {
-  const [ currentX, setCurrentX ] = useState<number>(0)
-  const [ currentY, setCurrentY ] = useState<number>(0)
-
-  const [ width, setWidth ] = useState<number>(window.innerWidth)
-  const [ height, setHeight ] = useState<number>(window.innerHeight)
-
-  const [ transformX, setTransformX ] = useState<number>(0)
-  const [ transformY, setTransformY ] = useState<number>(0)
-
-  type UpdateTransforms = () => void
-
-  const updateTransforms: UpdateTransforms = () => {
-    setWidth(window.innerWidth)
-    setHeight(window.innerHeight)
-  }
-
-  useEffect(() => {
-    window.addEventListener('resize', updateTransforms)
-    return () => window.removeEventListener('resize', updateTransforms)
-  })
-
-  useEffect(() => {
-    if(moveX) setTransformX(width * currentX)
-  }, [ currentX, width, moveX ])
-
-  useEffect(() => {
-    if(moveY) setTransformY(height * currentY)
-  }, [ currentY, height, moveY ])
-
-  if(!moveX && !moveY) throw new Error('Either moveX or moveY should be true')
-
-  return { transformX, transformY, currentX, currentY, setCurrentX, setCurrentY }
-}
-
-interface GenericIdentityFn<T> {
-  (arg: T, delay: number): T;
-}
-
-export const useDelay: GenericIdentityFn<any> = (arg, delay) => {
-  const [ newValue, setNewValue ] = useState<any>(arg)
-
-  useEffect(() => {
-    setTimeout(() => setNewValue(arg), delay)
-  }, [ arg, delay ])
-
-  return newValue
-}
-
-
-type UseViewWithDelay = (delay: number) => {
-  ref: React.Ref<HTMLDivElement | any>
-  inView: boolean
-}
-
-
-export const useInViewWithDelay: UseViewWithDelay = (delay) => {
-  const { ref, inView } = useInView()
-
-  const _inView = useDelay(inView, delay)
-
-  return { ref, inView: _inView }
-}
-
 type UseHover = () => {
   element: React.Ref<HTMLDivElement | any>
   on: boolean
@@ -131,4 +60,141 @@ export const useHover: UseHover = () => {
   })
 
   return { on, element }
+}
+
+interface UseInputArgs {
+  title?: string
+  text?: string
+  textMaxLen?: number
+  textMinLen?: number
+  bgImage?: string
+  bgImageWidth?: number
+  bgImageHeight?: number
+  sectionName?: string
+}
+
+type UseInputs = (section: string, options: UseInputArgs) => {
+  title: string, titleComponent: JSX.Element, 
+  text: string, textComponent: JSX.Element,
+  bgImage: string, bgImageComponent: JSX.Element,
+  bgImageWidth: number, bgImageWidthComponent: JSX.Element,
+  bgImageHeight: number, bgImageHeightComponent: JSX.Element,
+  sectionName: string, sectionNameComponent: JSX.Element,
+}
+
+export const useInputs: UseInputs = (section, content) => {
+  const [ bgImage, setBgImage ] = useState<string>(content.bgImage || '')
+  const [ bgImageWidth, setBgImageWidth ] = useState<number>(content.bgImageWidth || 100)
+  const [ bgImageHeight, setBgImageHeight ] = useState<number>(content.bgImageHeight || 100)
+  const [ sectionName, setSectionName ] = useState<string>(content.sectionName || '')
+  const [ title, setTitle ] = useState<string>(content.title || '')
+  const [ text, setText ] = useState<string>(content.text || '')
+
+  const titleComponent = (
+    <TitleInput
+      label={`Title of ${section}`}
+      value={ title }
+      onChange={(e) => setTitle(e.target.value)}
+    />
+  )
+
+  const textComponent = (
+    <TextInput
+      label={`An overview about ${section}`}
+      value={ text }
+      onChange={(e) => setText(e.target.value)}
+      min={ content.textMinLen || 40 }
+      max={ content.textMaxLen || 600 }
+    />
+  )
+
+  const sectionNameComponent = (
+    <TitleInput
+      label="How you want Introduction section to be labeled"
+      value={ sectionName }
+      onChange={(e) => setSectionName(e.target.value)}
+    />
+  )
+
+  const bgImageComponent = (
+    <UrlInput
+      label={`URL for bacground image of ${section}`}
+      value={ bgImage }
+      onChange={(e) => setBgImage(e.target.value)}
+      placeholder="https://example.com/image.png"
+    />
+  )
+
+  const bgImageWidthComponent = (
+    <NumberInput
+      label="Background Image Width"
+      value={ bgImageWidth }
+      min={ 40 }
+      max={ 100 }
+      onChange={(e) => setBgImageWidth(parseFloat(e.target.value))}
+    />
+  )
+  const bgImageHeightComponent = (
+    <NumberInput
+      label="Background Image Height"
+      value={ bgImageHeight }
+      min={ 35 }
+      max={ 100 }
+      onChange={(e) => setBgImageHeight(parseFloat(e.target.value))}
+    />
+  )
+
+  return {
+    title, text, sectionName, bgImage, bgImageHeight, bgImageWidth,
+    titleComponent, textComponent, sectionNameComponent, bgImageComponent, bgImageWidthComponent, bgImageHeightComponent
+  }
+}
+
+type UseSubmit = (
+  submitHandler: HandleEdit<SectionType>, 
+  validate: ValidateEdit<SectionType>,
+  data: SectionType
+) => {
+  button: JSX.Element
+  errorLog: JSX.Element | null
+}
+
+export const useSubmit: UseSubmit = (func, validate, data) => {
+  const [ error, setError ] = useState<string | undefined>(undefined)
+
+  useEffect(() => {
+    if(error) setTimeout(() => setError(undefined), 10000)
+  }, [ error ])
+
+  const clickHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault()
+    const validation = validate(data)
+    validation
+      ? setError(validation)
+      : func(data)
+  }
+
+  const errorLog = (
+    <>
+      {
+        error
+          ? (
+              <div id="error">
+                <p>{ error }</p>
+              </div>
+            )
+          : null
+      }
+    </>
+  )
+
+  const button = (
+    <div id="lowest-btn">
+      <button
+        onClick={ clickHandler }
+      >Submit</button>
+    </div>
+  )
+
+  return { button, errorLog }
 }

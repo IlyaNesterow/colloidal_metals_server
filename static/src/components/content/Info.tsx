@@ -1,17 +1,34 @@
 import React, { useState, useCallback } from 'react'
 
+import { useInputs, useSubmit } from '../../helpers/hooks'
 import { NumberInput, TextInput, TitleInput, UrlInput, Checkbox } from './Inputs'
 
-import { Info, EditSectionProps, PdfFile, SubSection } from '../../types'
+import { validateInformation } from '../../helpers/validators'
+
+import { Info, EditSectionProps, PdfFile, SubSection, SectionType } from '../../types'
+import { HandleEdit, ValidateEdit } from '../../types/functions'
 
 
-const InfoComponent: React.FC<EditSectionProps<Info>> = ({ content, section }) => {
-  const [ bgImage, setBgImage ] = useState<string>(content.bgImage)
-  const [ sectionName, setSectionName ] = useState<string>(content.sectionName)
-  const [ title, setTitle ] = useState<string | undefined>(content.title)
-  const [ summary, setSummary ] = useState<string>(content.summary)
-  const [ pdfFile, setPdfFile ] = useState<PdfFile | undefined>(content.pdfFile)
-  const [ subsections, setSubsections ] = useState<SubSection[] | undefined>(content.subSections)
+const InfoComponent: React.FC<EditSectionProps<Info>> = ({ content, page, handleSubmit }) => {
+  const { pdfFile, subSections } = content
+
+  const [ PDFFile, setPdfFile ] = useState<PdfFile | undefined>(pdfFile)
+  const [ subsections, setSubsections ] = useState<SubSection[] | undefined>(subSections)
+
+  const inputs = useInputs('information', { 
+    textMaxLen: 50, textMinLen: 60,
+    text: content.summary, ...content 
+  })
+
+  const { bgImage, sectionName, title, text } = inputs
+
+  const { button, errorLog } = useSubmit(
+    handleSubmit as HandleEdit<SectionType>, 
+    validateInformation as ValidateEdit<SectionType>,
+    { summary: text, pdfFile: PDFFile, subSections: subsections, bgImage, sectionName, title }
+  )
+
+  const { bgImageComponent, sectionNameComponent, titleComponent, textComponent } = inputs
 
   const subsectionPropOnChange = useCallback((
       value: string, 
@@ -69,55 +86,36 @@ const InfoComponent: React.FC<EditSectionProps<Info>> = ({ content, section }) =
 
   return(
     <div id="form-section">
-      <h2>{ `Information of ${ section }` }</h2>
-      <UrlInput
-        label="Link to background image"
-        value={ bgImage }
-        onChange={(e) => setBgImage(e.currentTarget.value)}
-        placeholder="https://example.com/image.png"
-      />
-      <TitleInput
-        label="How you want Information section to be labeled"
-        value={ sectionName }
-        onChange={(e) => setSectionName(e.currentTarget.value)}
-      />
-      <TitleInput
-        label="Title e.g. Nanoparticles, platinum, etc"
-        value={ title as string }
-        onChange={(e) => setTitle(e.currentTarget.value)}
-      />
-      <TextInput
-        label="A brief summary"
-        value={ summary }
-        onChange={(e) => setSummary(e.currentTarget.value)}
-        min={ 50 }
-        max={ 600 }
-      />
+      <h2>{ `Information of ${page}` }</h2>
+      { bgImageComponent }
+      { sectionNameComponent }
+      { titleComponent }
+      { textComponent }
       <h3>PDF File</h3>
-      {pdfFile 
+      {PDFFile 
         ? (
             <div id="flex-section">
               <TitleInput
                 label="description"
-                value={ pdfFile.description }
+                value={ PDFFile.description }
                 onChange={(e) => setPdfFile({
-                  ...pdfFile,
+                  ...PDFFile,
                   description: e.currentTarget.value
                 })}
               />
               <UrlInput
                 label="Link on PDF file"
-                value={ pdfFile.url }
+                value={ PDFFile.url }
                 onChange={(e) => setPdfFile({
-                  ...pdfFile,
+                  ...PDFFile,
                   url: e.currentTarget.value
                 })}
               />
               <TitleInput
                 label="How you want this section to be named"
-                value={ pdfFile.sectionName }
+                value={ PDFFile.sectionName }
                 onChange={(e) => setPdfFile({
-                  ...pdfFile,
+                  ...PDFFile,
                   sectionName: e.currentTarget.value
                 })}
               />
@@ -191,6 +189,8 @@ const InfoComponent: React.FC<EditSectionProps<Info>> = ({ content, section }) =
         ))
       }
       <span onClick={() => addSubSection()}>Add Subsection</span>
+      { errorLog }
+      { button }
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback, useRef } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 
 import Container from '../../styles/modifySection'
@@ -9,18 +9,18 @@ import Produced from './Production'
 import SellersComponent from './Sellers'
 import Other from './Other'
 
-import { Content, Page, Introduction, Info, Sellers } from '../../types'
+import * as Types from '../../types'
 import { HandleEdit } from '../../types/functions'
-import { content as url, sections } from '../../utils/variables'
+import { content as url } from '../../utils/variables'
 import { CloseModalCtx } from '../../helpers/contexts'
 
 interface Props {
-  section: string
-  part: string
+  page: Types.PageName
+  section: Types.SectionName
 }
 
-const EditSection: React.FC<Props> = ({ section, part }) => {
-  const [ content, setContent ] = useState<null | Content>(null)
+const EditSection: React.FC<Props> = ({ page, section }) => {
+  const [ content, setContent ] = useState<null | Types.Content>(null)
 
   const dispatch = useDispatch()
 
@@ -33,7 +33,7 @@ const EditSection: React.FC<Props> = ({ section, part }) => {
         if(!res.ok) throw new Error('AWS refused')
         return res.json()
       })
-      .then((res: Content) => {
+      .then((res: Types.Content) => {
         if(!res.pages) throw new Error('Content not found')
         setContent(res)
       })
@@ -41,48 +41,19 @@ const EditSection: React.FC<Props> = ({ section, part }) => {
       .finally(() => dispatch(setLoading(false)))
   }, [ dispatch ])
 
-  type GetPage = (stuff: Content) => Page | undefined
-  type SetPage = (stuff: Content, page: Page) => void
-
-  const getPage: GetPage = (obj) => {
-    switch(section){
-      case 'silver': 
-        return obj.pages.silver
-      case 'gold':
-        return obj.pages.gold
-      case 'platinum':
-        return obj.pages.platinum
-      case 'copper':
-        return obj.pages.copper
-    }
-  } 
-
-  const setPage: SetPage = (obj, page) => {
-    switch(section){
-      case 'silver': 
-        obj.pages.silver = page
-        break
-      case 'gold':
-        obj.pages.gold = page
-        break
-      case 'platinum':
-        obj.pages.platinum = page
-        break
-      case 'copper':
-        obj.pages.copper = page
-        break
-    }
-  } 
-
-  const _setPage = useRef(setPage)
-  const _getPage = useRef(getPage)
-
-  const handleSubmit: HandleEdit = useCallback((edited) => {
-    if(content){
-      const newContent = content
-      _setPage.current(newContent, edited)
-      setContent(newContent)
-      dispatch(setLoading(true))
+  const handleSubmit: HandleEdit<Types.SectionType> = useCallback((edited: Types.SectionType) => {
+    if(content && edited){
+      setContent({
+        ...content,
+        pages: {
+          ...content.pages,
+          [page]: {
+            ...content.pages[page],
+            [section]: edited
+          }
+        }
+      })
+      /*dispatch(setLoading(true))
 
       fetch('/edit/content', {
         method: 'PUT',
@@ -96,53 +67,51 @@ const EditSection: React.FC<Props> = ({ section, part }) => {
         .finally(() => {
           dispatch(setLoading(false))
           close()
-        })
+        })*/
     }
-  }, [ content, dispatch, close ])
+  }, [ content, /*dispatch, close,*/ page, section ])
 
   type RenderForm = () => JSX.Element | undefined
 
   const renderForm: RenderForm = () => {
-    if(content && sections.some(s => s === section))
-      switch(part){
+    if(content){
+      const props = { page, handleSubmit }
+      switch(section){
+      
         case 'introduction':
           return (
-            <Intro 
-              content={ _getPage.current(content)?.introduction as Introduction }
-              section={ section }
+            <Intro { ...props }
+              content={ content.pages[page][section] }
             />
           )
         case 'information':
           return(
-            <Information 
-              content={ _getPage.current(content)?.info as Info }
-              section={ section }
+            <Information { ...props }
+              content={ content.pages[page][section] }
             />  
           )
         case 'synthesys':
           return(
-            <Produced
-              content={ _getPage.current(content)?.howProduced }
-              section={ section }
+            <Produced { ...props }
+              content={ content.pages[page][section] }
             />
           )
         case 'sellers':
           return(
-            <SellersComponent
-              content={ _getPage.current(content)?.sellers as Sellers }
-              section={ section }
+            <SellersComponent { ...props }
+              content={ content.pages[page][section] }
             />
           )
         case 'other':
           return(
-            <Other
-              content={ _getPage.current(content)?.otherSources }
-              section={ section }
+            <Other { ...props }
+              content={ content.pages[page][section] }
             />
           )
         default: 
           return <></>
       }
+    }
   }
 
   return(

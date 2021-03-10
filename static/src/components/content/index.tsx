@@ -10,11 +10,12 @@ import Select from './Select'
 
 import { sections, parts } from '../../utils/variables'
 import { CloseModalCtx } from '../../helpers/contexts'
+import { PageName, SectionName } from '../../types'
 
 
 const Main: React.FC<any> = () => {
-  const [ currentOption, setCurrentOption ] = useState<string>('')
-  const [ part, setPart ] = useState<string>('')
+  const [ currentPage, setCurrentPage ] = useState<undefined | PageName>(undefined)
+  const [ currentSection, setCurrentSection ] = useState<undefined | SectionName>(undefined)
   const [ openModal, setOpenModal ] = useState<boolean>(false)
 
   const { theme } = useSelector(getAppInfo)
@@ -23,7 +24,7 @@ const Main: React.FC<any> = () => {
   const selectPart = useRef<HTMLSelectElement | null>(null)
 
   const handleBtnClick: React.MouseEventHandler<HTMLButtonElement> = () => {
-    if(sections.some(s => s.toLowerCase() === currentOption)) setOpenModal(true)
+    if(currentPage && currentSection) setOpenModal(true)
   }
 
   const cancelModifying: () => void = () => {
@@ -31,7 +32,8 @@ const Main: React.FC<any> = () => {
       selectPage.current.value = ''
       selectPart.current.value = ''
       setOpenModal(false)
-      setCurrentOption('')
+      setCurrentPage(undefined)
+      setCurrentSection(undefined)
     }
   }
 
@@ -41,27 +43,27 @@ const Main: React.FC<any> = () => {
         <h2>Modify content</h2>
         <h3>Choose Section</h3>
         <Select
-          onChange={(e) => setCurrentOption(e.target.value)}
+          onChange={(e) => setCurrentPage(e.target.value as PageName)}
           ref={ selectPage }
           items={ sections }
         />
         <h3>Choose Part</h3>
         <Select
-          onChange={(e) => setPart(e.target.value)}
+          onChange={(e) => setCurrentSection(e.target.value as SectionName)}
           ref={ selectPart }
           items={ parts }
         />
         <button 
           onClick={ handleBtnClick }
-          disabled={ !sections.some(s => s.toLowerCase() === currentOption) }
+          disabled={ !currentPage && !currentSection }
         >MODIFY</button>
       </Container>
-      { openModal &&
+      { openModal && currentPage && currentSection &&
         <CloseModalCtx.Provider value={ cancelModifying }>
           <Modal>
             <EditSection 
-              section={ currentOption }
-              part={ part }
+              page={ currentPage }
+              section={ currentSection }
             />
           </Modal>
         </CloseModalCtx.Provider>
