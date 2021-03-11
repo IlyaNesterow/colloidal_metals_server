@@ -1,7 +1,7 @@
 import React from 'react'
 
 import SingleLink from './SingleLink'
-import { UrlInput, TitleInput } from './Inputs'
+import { useElemsFromList } from '../../helpers/hooks'
 
 import { Link } from '../../types'
 
@@ -12,17 +12,10 @@ interface Props {
 }
 
 const Links: React.FC<Props> = ({ links, _key, setLinks }) => {
-  const addItem = (item: Link, index: number) => {
-    const _links = links
-    _links[index] = item
-    setLinks(_links)
-  }
-
-  const deleteElem = (index: number) => {
-    const updatedElems = links
-    updatedElems.splice(index, 1)
-    setLinks([...updatedElems]) 
-  }
+  const { deleteElem, updateElem, addElem } = useElemsFromList<Link>(
+    links, setLinks, _key, 
+    { url: '', _name: '' }
+  )
 
   return(
     <>
@@ -34,20 +27,11 @@ const Links: React.FC<Props> = ({ links, _key, setLinks }) => {
             elem={ elem }
             index={ index }
             deleteItem={ deleteElem }
-            onChange={ addItem }
+            onChange={ updateElem }
           />
         ))
       }
-      <span 
-        id="add-smth"
-        className="no-select"
-        onClick={() => 
-          setLinks([
-            ...links, 
-            { url: '', _name: '' } 
-          ])
-        }
-      >{`Add ${_key} 🪄`}</span>
+      { addElem }
     </>
   )
 }

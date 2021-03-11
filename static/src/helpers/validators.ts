@@ -7,25 +7,28 @@ import { ValidateEdit } from '../types/functions'
 export const validateIntroduction: ValidateEdit<Introduction> = (data) => {
   const { title, text, bgImage, sectionName, videos } = data
 
-  if(title) if(validateTitle(title)) return 'Wrong title'
-  if(validateText(text)) return 'Wrong text'
+  if(title) if(validateTitle(title)) return 'Title is too short or too long'
+  if(validateText(text)) return 'Test is too short or too long'
   if(validateURL(bgImage)) return 'Invalid background image path'
   if(validateTitle(sectionName)) return 'Section name is either short or long'
 
-  if(videos && videos.length > 0) if(validateLinks(videos, 'Video')) return 'check video paths and names'
+  if(videos && videos.length > 0){
+    let error = validateLinks(videos, 'videos')
+    if(error) return error
+  }
 }
 
 export const validateInformation: ValidateEdit<Info> = (data) => {
   const { summary, title, bgImage, sectionName, pdfFile, subSections } = data
 
-  if(title) if(validateTitle(title)) return 'Wrong title'
-  if(validateText(summary)) return 'Overview must be 40 - 600 characters and include only numbers and letters'
-  if(validateURL(bgImage)) return 'Background image URl is incorrect'
+  if(title) if(validateTitle(title)) return 'Title is too short or too long'
+  if(validateText(summary, { max: 900, min: 40 })) return 'Overview must be 40 - 900 characters and include only numbers and letters'
+  if(validateURL(bgImage)) return 'Background image URl is invalid'
   if(validateTitle(sectionName)) return 'Section name is either short or long'
 
   if(pdfFile){
     const { url, description } = pdfFile
-    if(validateURL(url)) return 'Wrong PDF file path'
+    if(validateURL(url)) return 'Invalid PDF file path'
     if(validateText(description, { min: 20, max: 100 })) return 'PDF file description must be 20 - 100 characters long'
   }
 
@@ -33,12 +36,12 @@ export const validateInformation: ValidateEdit<Info> = (data) => {
     if(subSections && subSections.length > 0){
       for(let i = 0; i < subSections.length; i++){
         const { sectionName, text, title, bgImage, _arguments } = subSections[i] 
-        if((title && validateTitle(title)) ||
-          (text && validateText(text))     || 
-          (validateURL(bgImage))           || 
-          (validateTitle(sectionName))) throw new Error(`Check subsections number ${i + 1} content`)
+        if(title && validateTitle(title)) throw new Error(`Subsections ${i + 1} title seems to be invalid`)
+        if(text && validateText(text)) throw new Error(`Subsections ${i + 1} text seems to be invalid`)
+        if(validateURL(bgImage)) throw new Error(`Subsections ${i + 1} background image path seems to be invalid`)
+        if(validateTitle(sectionName)) throw new Error(`Subsections ${i + 1} section name seems to be invalid`)
         for(let j = 0; j < _arguments.length; j++){
-          if(validateText(_arguments[j].statement, { min: 30, max: 300 })) throw new Error(`Check statement ${j + 1} of ${i + 1} section`)
+          if(validateText(_arguments[j].statement, { min: 30, max: 300 })) throw new Error(`Statement ${j + 1} of ${i + 1} section seems to be invalid`)
         }
       }
     }
@@ -50,36 +53,47 @@ export const validateInformation: ValidateEdit<Info> = (data) => {
 export const validateSynthesys: ValidateEdit<HowProduced> = (data) => {
   const { title, bgImage, sectionName, text } = data
 
-  if(title) if(validateTitle(title)) return 'Title is wrong'
-  if(validateText(text)) return 'Overview is wrong'
-  if(validateURL(bgImage)) return 'Background image URL is wrong'
-  if(validateTitle(sectionName)) return 'Section Name is wrong'
+  if(title) if(validateTitle(title)) return 'Title is too short or too long'
+  if(validateText(text)) return 'Overview is too short or too long'
+  if(validateURL(bgImage)) return 'Background image URL is invalid'
+  if(validateTitle(sectionName)) return 'Section Name is too short or too long'
 }
 
 export const validateSellers: ValidateEdit<Sellers> = (data) => {
   const { title, sectionName, sellers, bgImage } = data
 
-  if(title) if(validateTitle(title, { max: 25 })) return 'Title is wrong'
-  if(validateURL(bgImage)) return 'Background image URL is wrong'
-  if(validateTitle(sectionName)) return 'Section name is incorrect'
-  if(sellers.length > 0) if(validateLinks(sellers, 'Resource')) return 'Check URL and name of sellers'
+  if(title) if(validateTitle(title, { max: 25 })) return 'Title is too short or too long'
+  if(validateURL(bgImage)) return 'Background image URL is invalid'
+  if(validateTitle(sectionName)) return 'Section name is too short or too long'
+  
+  if(sellers.length > 0){
+    let error = validateLinks(sellers, 'sellers')
+    if(error) return error
+  }
 }
 
 export const validateOther: ValidateEdit<OtherSources> = (data) => {
   const { title, urls, sectionName } = data
 
-  if(title) if(validateTitle(title)) return 'Wrong title'
-  if(validateTitle(sectionName)) return 'Wrong section name'
-  if(urls.length > 0) if(validateLinks(urls, 'Resource')) return 'Check URL and name of resources'
+  if(title) if(validateTitle(title)) return 'Title is too short or too long'
+  if(validateTitle(sectionName)) return 'Section name is too short or too long'
+
+  if(urls.length > 0){
+    let error = validateLinks(urls, 'resources')
+    if(error) return error
+  }
 }
 
-const validateLinks: ((links: Link[], ctx: string) => boolean) = (links, ctx) => {
-  let error = false
+const validateLinks: ((links: Link[], ctx: string) => string | undefined) = (links, ctx) => {
+  let error: string | undefined 
 
   for(let i = 0; i < links.length; i++){
     const { _name, url } = links[i]
-    if(validateTitle(_name) || validateURL(url)){
-      error = true
+    try{
+      if(validateTitle(_name)) throw new Error(`Invalid ${ctx} name of item ${ i + 1 }`)
+      if(validateURL(url)) throw new Error(`Invalid ${ctx} url of item ${ i + 1 }`)
+    } catch(err) {
+      error = err.message
       break
     }
   }
@@ -96,16 +110,16 @@ const validateTitle: ((title: string, options?: ArgOptions) => boolean) = (title
   let min = options ? options.min : 4
   let max = options ? options.max : 30
 
-  return (!validator.isAlphanumeric(title)) || (!validator.isLength(title, { max, min }))
+  return !validator.isLength(title, { max, min })
 }
 
 const validateText: ((text: string, options?: ArgOptions) => boolean) = (text, options) => {
   let min = options ? options.min : 40
   let max = options ? options.max : 600
-
-  return !validator.isAlphanumeric(text) || !validator.isLength(text, { max, min })
+  console.log(text.length)
+  return !validator.isLength(text, { max, min })
 }
 
 const validateURL: ((url: string) => boolean) = (url) => {
-  return validator.isURL(url)
+  return !validator.isURL(url)
 }

@@ -16,7 +16,7 @@ interface SectionWithResizableImage extends SectionWithImage {
   bgImageHeight?: number
 }
 
-interface Argument{
+export interface Argument{
   bold?: boolean
   statement: string
 }
@@ -87,6 +87,13 @@ export interface EditSectionProps<T>{
   content: T
   page: string
   handleSubmit: HandleEdit<T>
+}
+
+export interface FormComponentProps<T>{
+  elem: T
+  index: number
+  deleteItem: (i: number) => void
+  onChange: (item: T, index: number) => void
 }
 
 export type SectionName = keyof Page //'introduction' | 'information' | 'synthesys' | 'sellers' | 'other'

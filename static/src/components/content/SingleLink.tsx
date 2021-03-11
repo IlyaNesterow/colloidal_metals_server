@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
+import { useSingleElem } from '../../helpers/hooks'
 import { UrlInput, TitleInput } from './Inputs'
 
-import { Link } from '../../types'
+import { Link, FormComponentProps } from '../../types'
 
-interface Props {
+interface Props extends FormComponentProps<Link> {
   _key: string
-  elem: Link
-  index: number
-  deleteItem: (i: number) => void
-  onChange: (item: Link, index: number) => void
 }
 
 const SingleLink: React.FC<Props> = ({ elem, _key, index, deleteItem, onChange }) => {
   const [ url, setUrl ] = useState<string>(elem.url)
   const [ name, setName ] = useState<string>(elem._name)
 
-  useEffect(() => {
-    onChange({ url, _name: name }, index)
-  }, [ url, name, index, onChange ])
-  
+  const { deleteBtn } = useSingleElem<Link>({
+    index, deleteItem, onChange,
+    elem: {
+      url,
+      _name: name
+    }
+  })
+
   return(
     <div id="url-description">
       <UrlInput
@@ -34,11 +35,7 @@ const SingleLink: React.FC<Props> = ({ elem, _key, index, deleteItem, onChange }
         placeholder="Something..."
         onChange={(e) => setName(e.target.value)}
       />
-      <span 
-        id="remove-smth"
-        className="no-select"
-        onClick={() => deleteItem(index)}
-      >🗑️</span>
+      { deleteBtn }
     </div>
   )
 }

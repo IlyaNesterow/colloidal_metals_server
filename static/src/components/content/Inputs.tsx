@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 
+import { v4 } from 'uuid'
 
 interface Props<T> {
   label: string 
@@ -86,11 +87,16 @@ interface CheckBoxProps {
 }
 
 export const Checkbox: React.FC<CheckBoxProps> = ({ label, ...props }) => {
+  const [ id ] = useState<string>(v4())
+
   return(
     <div>
-      <label htmlFor="input-checkbox">{ label }</label>
+      <label 
+        className="custom-checkbox"
+        htmlFor={ id }
+      >{ label }</label>
       <input
-        id="input-checkbox"
+        id={ id }
         type="checkbox"
         { ...props }
       />
